@@ -2,8 +2,13 @@
 const indexText = document.getElementById("index");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const X = canvas.width / 2;
-const Y = canvas.height / 2;
+let radius;
+
+resize(window.innerWidth);
+window.onresize = event => {
+  resize(event.currentTarget.innerWidth);
+  draw();
+};
 
 // array
 let timeout = 10;
@@ -19,9 +24,16 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function resize(width) {
+  width = width > 496 ? width / 3 : width / 2.5;
+  canvas.width = width;
+  canvas.height = width;
+  radius = width / 2;
+}
+
 function draw() {
   if (curr) {
-    ctx.clearRect(0, 0, X * 2, Y * 2);
+    ctx.clearRect(0, 0, radius * 2, radius * 2);
     let last = 0;
     for (let i = 1; i <= curr.length; i++) {
       let rad = i * (2 * Math.PI) / curr.length;
@@ -29,10 +41,13 @@ function draw() {
       ctx.fillStyle = color;
       ctx.strokeStyle = color;
       ctx.beginPath();
-      ctx.moveTo(X, Y);
-      ctx.arc(X, Y, Y, last, rad, false);
+      ctx.moveTo(radius, radius);
+      ctx.arc(radius, radius, radius, last, rad, false);
       last = rad;
-      ctx.lineTo(X + X * Math.cos(rad), Y + Y * Math.sin(rad));
+      ctx.lineTo(
+        radius + radius * Math.cos(rad),
+        radius + radius * Math.sin(rad)
+      );
       ctx.fill();
       ctx.stroke();
     }
@@ -58,6 +73,7 @@ function check(val) {
 }
 
 function changeSpeed(speed) {
+  console.log(speed);
   timeout = 500 / speed;
 }
 
@@ -85,6 +101,7 @@ function insertion() {
     if (curr.length >= 200) a.push([...curr]);
     curr[j + 1] = tmp;
   }
+  console.log(a);
   run();
 }
 
